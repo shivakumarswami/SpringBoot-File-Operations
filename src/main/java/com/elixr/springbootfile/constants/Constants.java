@@ -9,9 +9,6 @@ public class Constants {
     public static final String ID_NOT_FOUND = "id Not Found";
     public static final String USERNAME_NOT_FOUND = "UserName Not Found";
     public static final String FILE_NOT_FOUND = "File Not Found";
+    public static final String FILE_NOT_SPECIFIED = "File Not Specified";
     public static final String UPLOAD_DIR = "C:\\Users\\WIIS\\IdeaProjects\\springBootDocker\\src\\main\\resources\\files\\";
 }
-
-
-
-

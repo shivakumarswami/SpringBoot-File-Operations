@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public ResponseEntity<?> getFileById(String id) {
+    public ResponseEntity<SuccessResponse> getFileById(String id) {
         ModelFile getFile = fileRepo.findById(UUID.fromString(id)).orElseThrow(() -> new NotFoundException(Constants.ID_NOT_FOUND));
         String fileName = getFile.getFileName();
         File file = new File(Constants.UPLOAD_DIR + fileName);
@@ -64,7 +64,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public ResponseEntity<?> getFileByUserName(String userName) {
+    public ResponseEntity<SuccessResponse> getFileByUserName(String userName) {
         Optional<ModelFile> getFile = Optional.ofNullable(fileRepo.findByUserName(userName).orElseThrow(() -> new NotFoundException(Constants.USERNAME_NOT_FOUND)));
         String fileName = getFile.get().getFileName();
         File file = new File(Constants.UPLOAD_DIR + fileName);
