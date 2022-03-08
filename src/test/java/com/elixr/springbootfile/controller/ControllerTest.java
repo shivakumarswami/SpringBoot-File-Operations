@@ -2,7 +2,6 @@ package com.elixr.springbootfile.controller;
 
 import com.elixr.springbootfile.service.FileService;
 import org.junit.Before;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static com.mongodb.assertions.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,31 +54,48 @@ class ControllerTest {
     }
 
     @Test
-    public void test_UploadFile_NoFileProvided() throws Exception {
+    public void testUploadFileNoFileProvided() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.multipart("/upload"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
     void getFileById() throws Exception {
-        when(fileService.getFileById("04c3cae6-c213-48c1-a640-14837d0ed659"))
+        String id = "da2fdbec-3354-475d-8a9e-8d0a30e0ac87";
+        when(fileService.getFileByUserId(id))
                 .thenReturn(new ResponseEntity<>(HttpStatus.OK));
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/file/id")
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/fileId")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-        Assertions.assertEquals(200, result.getResponse().getStatus());
-        assertNotNull(result.getResponse().getContentAsString());
     }
 
+    @Test
+    public void errorGetFileById() throws Exception {
+        when(fileService.getFileByUserId(anyString()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/fileId")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }
 
     @Test
     void getFileByName() throws Exception {
-        when(fileService.getFileByUserName("Shiv")).thenReturn(new ResponseEntity<>(HttpStatus.OK));
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/file/user/username")
+        String userName = "shiva";
+        when(fileService.getFileByUserName(userName)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/user/username")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-        Assertions.assertEquals(200, result.getResponse().getStatus());
-        assertNotNull(result.getResponse().getContentAsString());
+
+    }
+
+    @Test
+    public void errorGetFileByName() throws Exception {
+        when(fileService.getFileByUserName(anyString()))
+                .thenReturn(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        mockMvc.perform(MockMvcRequestBuilders.get("/file/user/userName")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound()).andReturn();
     }
 }

@@ -3,6 +3,7 @@ package com.elixr.springbootfile.exceptionhandling;
 import com.elixr.springbootfile.constants.Constants;
 import com.elixr.springbootfile.response.ErrorResponse;
 import lombok.NoArgsConstructor;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -22,6 +23,10 @@ public class ExceptionHandling {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException exception) {
         return new ResponseEntity<>(buildErrorResponse(exception.getLocalizedMessage()), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(InternalServerException.class)
+    public ResponseEntity<ErrorResponse> handleInternalServerException(InternalServerException exception) {
+        return new ResponseEntity<>(buildErrorResponse(exception.getLocalizedMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -47,6 +52,11 @@ public class ExceptionHandling {
     @ExceptionHandler(UnexpectedTypeException.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedTypeException(Exception exception) {
         return new ResponseEntity<>(buildErrorResponse(exception.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleIncorrectResultSizeDataAccessException() {
+        return new ResponseEntity<>(buildErrorResponse(Constants.USERNAME_FOUND_MULTIPLE_TIME), HttpStatus.BAD_REQUEST);
     }
 
     private ErrorResponse buildErrorResponse(String message) {

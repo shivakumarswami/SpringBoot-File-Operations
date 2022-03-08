@@ -12,4 +12,5 @@ public class FileInfoDTO {
     private String fileName;
     private LocalDateTime dateAndTime;
     private UUID id;
+    private Boolean isFilePresent;
 }
